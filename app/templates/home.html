@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wishlist maker</title>
+    <style>
+        /* Add your styles here */
+    </style>
+</head>
+<body>
+    <h1>share my wishlist!</h1>
+
+    <form action="{{ url_for('add_item') }}" method="post">
+
+        <label for="title">new wishlist item:</label>
+        <input type="text" id="title" name="title" required>
+
+        <label for="link">optional link:</label>
+        <input type="text" id="link" name="link">
+
+        <button type="submit">add</button>
+    </form>
+
+    {% if wishlist_items %}
+        <ul>
+            {% for item in wishlist_items %}
+                <li>
+                    {% if item.link %}
+                        <a href="{{ item.link }}">{{ item.title }}</a>
+                    {% else %}
+                        {{ item.title }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <a href="{{ url_for('submit') }}">
+            <button type="button">create wishlist</button>
+        </a>
+    {% else %}
+        <p>no items added yet.</p>
+    {% endif %}
+</body>
+</html>
