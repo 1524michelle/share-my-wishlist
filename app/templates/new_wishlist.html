@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wishlist maker</title>
+</head>
+<body>
+    <h1>wishlist</h1>
+
+    {% if wishlist_items %}
+        <ul>
+            {% for item in wishlist_items %}
+                <li>
+                    {% if item.link %}
+                        <a href="{{ item.link }}">{{ item.title }}</a>
+                    {% else %}
+                        {{ item.title }}
+                    {% endif %}
+                    {% if item.contributor_name %}
+                        (contributor: {{ item.contributor_name }})
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>no items in this list.</p>
+    {% endif %}
+</body>
+</html>

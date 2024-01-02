@@ -50,8 +50,8 @@
                                 {% else %}
                                     {{ item.title }}
                                 {% endif %}
-                                {% if item.contributor %}
-                                    (contributor: {{ item.contributor }})
+                                {% if item.contributor_name %}
+                                    (contributor: {{ item.contributor_name }})
                                 {% endif %}
                             </label>
                         </li>
@@ -70,7 +70,7 @@
     const contributorText = document.getElementById('contributor_text');
 
     contributorForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // prevent default 'submit & reload' behavior
+        // event.preventDefault(); // prevent default 'submit & reload' behavior
         const contributorName = document.getElementById('contributor_name').value;
 
         // Show the contributor text
