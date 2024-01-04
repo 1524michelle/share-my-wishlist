@@ -2,7 +2,7 @@ from flask import Flask, jsonify, redirect, render_template, request, session, u
 from .models import insert_wishlist, get_wishlist_by_uuid, update_wishlist_items
 import uuid
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../client/build")
 app.secret_key = 'my_secret_key'  # secret key for session mgmt
 
 # GET homepage where new wishlists are initialized
