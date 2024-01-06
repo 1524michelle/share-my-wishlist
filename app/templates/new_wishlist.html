@@ -4,27 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>wishlist maker</title>
+    <style>
+        /* Add your styles here */
+        body {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .column {
+            width: 48%; /* Adjust as needed */
+            margin: 10px;
+        }
+
+        .wishlist-column {
+            border-left: 1px solid #ccc; /* Add a border between columns */
+            padding-left: 20px; /* Adjust padding as needed */
+        }
+    </style>
 </head>
 <body>
-    <h1>wishlist</h1>
+    <!-- Left Column: Contributor Form -->
+    <div class="column">
+        <h2>contributor</h2>
+        <form id="contributorForm" method="post" action="{{ url_for('submit_contributor', wishlist_uuid=wishlist_uuid) }}">
+            <label for="contributor_name">your name:</label>
+            <input type="text" id="contributor_name" name="contributor_name" required>
+            <button type="submit">submit name</button>
+        </form>
+        <p id="contributor_text" style="display: none;"></p>
+    </div>
 
-    {% if wishlist_items %}
-        <ul>
-            {% for item in wishlist_items %}
-                <li>
-                    {% if item.link %}
-                        <a href="{{ item.link }}">{{ item.title }}</a>
-                    {% else %}
-                        {{ item.title }}
-                    {% endif %}
-                    {% if item.contributor_name %}
-                        (contributor: {{ item.contributor_name }})
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>no items in this list.</p>
-    {% endif %}
+    <!-- Right Column: Wishlist -->
+    <div class="column wishlist-column">
+        <h2>{{ owner_name }}'s' wishlist</h2>
+
+        {% if wishlist_items %}
+            <form method="post" action="{{ url_for('submit_wishlist', wishlist_uuid=wishlist_uuid) }}">
+                <ul>
+                    {% for item in wishlist_items %}
+                        <li>
+                            <input type="checkbox" id="{{ item.title }}" name="wishlist_item" value="{{ item.title }}">
+                            <label for="{{ item.title }}">
+                                {% if item.link %}
+                                    <a href="{{ item.link }}">{{ item.title }}</a>
+                                {% else %}
+                                    {{ item.title }}
+                                {% endif %}
+                                {% if item.contributor_name %}
+                                    (contributor: {{ item.contributor_name }})
+                                {% endif %}
+                            </label>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <button type="submit">submit wishlist</button>
+            </form>
+        {% else %}
+            <p>no items in this list.</p>
+        {% endif %}
+    </div>
+
+    <script>
+
+    const contributorForm = document.getElementById('contributorForm');
+    const contributorText = document.getElementById('contributor_text');
+
+    contributorForm.addEventListener('submit', function(event) {
+        // event.preventDefault(); // prevent default 'submit & reload' behavior
+        const contributorName = document.getElementById('contributor_name').value;
+
+        // Show the contributor text
+        contributorText.innerText = `Contributor: ${contributorName}`;
+        contributorText.style.display = 'block';
+
+        // You can remove or adjust this part based on your preference
+        // Hide the form after a brief delay (for demonstration purposes)
+        setTimeout(() => {
+            contributorForm.style.display = 'none';
+        }, 0);  // Adjust the delay time as needed
+    });
+
+    </script>
 </body>
 </html>
