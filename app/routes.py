@@ -11,8 +11,7 @@ app.secret_key = 'my_secret_key'  # secret key for session mgmt
 @app.route("/")
 def home():
     print("home")
-    wishlist_items = session.get('wishlist_items', [])
-    return render_template('home.html', wishlist_items=wishlist_items)
+    return render_template('home.html')
 
 
 @app.route('/submit_owner_name', methods=['POST'])
@@ -22,8 +21,10 @@ def submit_owner_name():
 
     if owner_name:
         session['owner_name'] = owner_name
-
-    return redirect(url_for('create_list'))
+        return redirect(url_for('create_list'))
+    else:
+        # no name -> refresh
+        return redirect(url_for('/'))
 
 # ADD TO (CREATE) LIST PAGE
 
@@ -54,9 +55,9 @@ def add_item():
     return redirect(url_for('create_list'))
 
 
-@app.route("/submit_list")
-def submit_list():
-    print("submit_list")
+@app.route("/submit_wishlist")
+def submit_wishlist():
+    print("submit_wishlist")
     wishlist_uuid = str(uuid.uuid4())
 
     # get items from current session
@@ -72,50 +73,74 @@ def submit_list():
     session.pop('wishlist_items', None)
     session.pop('owner_name', None)
 
-    return redirect(url_for('wishlist_contributors', wishlist_uuid=wishlist_uuid))
+    return redirect(url_for('wishlist', wishlist_uuid=wishlist_uuid))
+
+# WISHLIST RECEIPT PAGE
+
+
+@app.route("/wishlist/<wishlist_uuid>")
+def wishlist(wishlist_uuid):
+    print("wishlist")
+    # get wishlist data from db
+    wishlist_data = get_wishlist_by_uuid(wishlist_uuid)
+    owner_name = wishlist_data['owner_name']
+    wishlist_items = wishlist_data['items']
+
+    return render_template('wishlist.html', owner_name=owner_name, wishlist_uuid=wishlist_uuid, wishlist_items=wishlist_items)
+
+# WISHLIST CONTRIBUTORS SIGNUP PAGE
+
+
+@app.route("/wishlist_contributors_signup/<wishlist_uuid>")
+def wishlist_contributors_signup(wishlist_uuid):
+    print("wishlist_contributors_signup")
+    return render_template('wishlist_contributors_signup.html', wishlist_uuid=wishlist_uuid)
+
+
+@app.route('/submit_contributor_name/<wishlist_uuid>', methods=['POST'])
+def submit_contributor_name(wishlist_uuid):
+    print("submit_contributor_name")
+    contributor_name = request.form.get('contributor_name')
+
+    if contributor_name:
+        session['contributor_name'] = contributor_name
+        return redirect(url_for('wishlist_contributors', wishlist_uuid=wishlist_uuid))
+    else:
+        # no contributor name -> refresh page
+        return redirect(url_for('wishlist_contributors_signup', wishlist_uuid=wishlist_uuid))
 
 # WISHLIST CONTRIBUTORS PAGE
 
 
 @app.route("/wishlist_contributors/<wishlist_uuid>")
 def wishlist_contributors(wishlist_uuid):
-    print("wishlist")
+    print("wishlist_contributors")
+
     # get wishlist data from db
     wishlist_data = get_wishlist_by_uuid(wishlist_uuid)
     print("Retrieved data:", wishlist_data['items'])
     owner_name = wishlist_data['owner_name']
     wishlist_items = wishlist_data['items']
 
-    return render_template('wishlist_contributors.html', owner_name=owner_name, wishlist_uuid=wishlist_uuid, wishlist_items=wishlist_items)
+    # get contributor name from session
+    contributor_name = session['contributor_name']
+
+    return render_template('wishlist_contributors.html', owner_name=owner_name, contributor_name=contributor_name, wishlist_uuid=wishlist_uuid, wishlist_items=wishlist_items)
 
 
-@app.route("/submit_contributor/<wishlist_uuid>", methods=['POST'])
-def submit_contributor(wishlist_uuid):
-    print("submit_contributor")
-    contributor_name = request.form.get('contributor_name')
-    print("contributor name = ", contributor_name)
-
-    if contributor_name:
-        # set contributor name in current session
-        session['contributor_name'] = contributor_name
-
-    return redirect(url_for('wishlist_contributors', wishlist_uuid=wishlist_uuid))
-
-# POST submit changes to wishlist and redirect to the final wishlist page
-
-
-@app.route("/submit_wishlist/<wishlist_uuid>", methods=['POST'])
-def submit_wishlist(wishlist_uuid):
-    print("submit_wishlist")
+@app.route("/submit_wishlist_contributors/<wishlist_uuid>", methods=['POST'])
+def submit_wishlist_contributors(wishlist_uuid):
+    print("submit_wishlist_contributors")
     # check if there's a contributor in session, refresh if not
     contributor_name = session.get('contributor_name')
     if not contributor_name:
-        return redirect(url_for('wishlist_contributors', wishlist_uuid=wishlist_uuid))
+        print("no contributor name")
 
     # get selected items and check that at least one is selected, refresh if not
     selected_items = request.form.getlist('wishlist_item')
     print("selected items: ", selected_items)
     if not selected_items:
+        print("no selected items")
         return redirect(url_for('wishlist_contributors', wishlist_uuid=wishlist_uuid))
 
     # get wishlist data from db
@@ -133,18 +158,6 @@ def submit_wishlist(wishlist_uuid):
     session.pop('contributor_name', None)
 
     return redirect(url_for('wishlist', wishlist_uuid=wishlist_uuid))
-
-# GET homepage where new wishlists are initialized
-
-
-@app.route("/wishlist/<wishlist_uuid>")
-def wishlist(wishlist_uuid):
-    print("wishlist")
-    # get wishlist data from db
-    wishlist_data = get_wishlist_by_uuid(wishlist_uuid)
-    wishlist_items = wishlist_data['items']
-
-    return render_template('wishlist.html', wishlist_uuid=wishlist_uuid, wishlist_items=wishlist_items)
 
 
 @app.route("/hello")

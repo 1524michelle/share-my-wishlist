@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wishlist maker</title>
+    <style>
+        /* Add your styles here */
+    </style>
+</head>
+<body>
+    <h1>share my wishlist!</h1>
+
+    <form action="{{ url_for('submit_contributor_name', wishlist_uuid=wishlist_uuid) }}" method="post">
+        <label for="contributor_name">contributor name:</label>
+        <input type="text" id="contributor_name" name="contributor_name" placeholder="mimi" required>
+
+        <button type="submit">go!</button>
+    </form>
+</body>
+
+</html>
