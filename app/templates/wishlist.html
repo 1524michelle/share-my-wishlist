@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>wishlist maker</title>
+    <title>share my wishlist!</title>
 </head>
 <body>
-    <h1>wishlist</h1>
+    <h1>{{ owner_name }}'s wishlist</h1>
+
+    <form action="{{ url_for('redirect_contributor_page', wishlist_uuid=wishlist_uuid) }}" method="post">
+        <button type="submit">contributor signup link</button>
+    </form>
 
     {% if wishlist_items %}
         <ul>

@@ -75,26 +75,17 @@ def submit_wishlist():
 
     return redirect(url_for('wishlist', wishlist_uuid=wishlist_uuid))
 
-# WISHLIST RECEIPT PAGE
-
-
-@app.route("/wishlist/<wishlist_uuid>")
-def wishlist(wishlist_uuid):
-    print("wishlist")
-    # get wishlist data from db
-    wishlist_data = get_wishlist_by_uuid(wishlist_uuid)
-    owner_name = wishlist_data['owner_name']
-    wishlist_items = wishlist_data['items']
-
-    return render_template('wishlist.html', owner_name=owner_name, wishlist_uuid=wishlist_uuid, wishlist_items=wishlist_items)
-
 # WISHLIST CONTRIBUTORS SIGNUP PAGE
 
 
 @app.route("/wishlist_contributors_signup/<wishlist_uuid>")
 def wishlist_contributors_signup(wishlist_uuid):
     print("wishlist_contributors_signup")
-    return render_template('wishlist_contributors_signup.html', wishlist_uuid=wishlist_uuid)
+    # get wishlist data from db
+    wishlist_data = get_wishlist_by_uuid(wishlist_uuid)
+    owner_name = wishlist_data['owner_name']
+
+    return render_template('wishlist_contributors_signup.html', owner_name=owner_name, wishlist_uuid=wishlist_uuid)
 
 
 @app.route('/submit_contributor_name/<wishlist_uuid>', methods=['POST'])
@@ -158,6 +149,27 @@ def submit_wishlist_contributors(wishlist_uuid):
     session.pop('contributor_name', None)
 
     return redirect(url_for('wishlist', wishlist_uuid=wishlist_uuid))
+
+# WISHLIST RECEIPT PAGE
+
+
+@app.route("/wishlist/<wishlist_uuid>")
+def wishlist(wishlist_uuid):
+    print("wishlist")
+    # get wishlist data from db
+    wishlist_data = get_wishlist_by_uuid(wishlist_uuid)
+    owner_name = wishlist_data['owner_name']
+    wishlist_items = wishlist_data['items']
+
+    return render_template('wishlist.html', owner_name=owner_name, wishlist_uuid=wishlist_uuid, wishlist_items=wishlist_items)
+
+
+@app.route("/redirect_contributor_page/<wishlist_uuid>", methods=['POST'])
+def redirect_contributor_page(wishlist_uuid):
+    print(redirect_contributor_page)
+    return redirect(url_for('wishlist_contributors_signup', wishlist_uuid=wishlist_uuid))
+
+# TEST
 
 
 @app.route("/hello")
