@@ -18,4 +18,8 @@ Based off when2meet, but instead it`s a shareable wishlist where people can sign
 
 ### Wishlist contributors page: contributors select their gifts
 1. `wishlist_contributors/<wishlist_uuid>` (GET) = renders list where contributor checks their gift choice(s)
-2. `submit_wishlist_contributors/<wishlist_uuid>` (POST) = processes contributor choices from the form and sto
+2. `submit_wishlist_contributors/<wishlist_uuid>` (POST) = processes contributor choices from the form and adds them to the db, redirects to the wishlist page
+
+### Wishlist page: see all items and contributors
+1. `wishlist/<wishlist_uuid>` (GET) = renders wishlist page
+2. `redirect_contributor_page/<wishlist_uuid>` (POST) = redirects to contributor signup page
