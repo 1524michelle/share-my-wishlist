@@ -27,7 +27,7 @@
                                 {% endif %}
                                 (contributor: {{ item.contributor_name }})
                         {% else %}
-                            <input type="checkbox" id="{{ item.title }}" name="wishlist_item" value="{{ item.title }}" disabled>
+                            <input type="checkbox" id="{{ item.title }}" name="wishlist_item" value="{{ item.title }}">
                             <label for="{{ item.title }}">
                                 {% if item.link %}
                                     <a href="{{ item.link }}">{{ item.title }}</a>
