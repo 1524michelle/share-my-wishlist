@@ -1,5 +1,5 @@
 # Share my Wishlist!
-Based off when2meet, but instead it`s a shareable wishlist where people can sign up to cover that gift to prevent cases of double-gifting.
+Based off when2meet, but instead it`s a shareable wishlist where people can sign up to claim that gift to prevent cases of double-gifting.
 
 ## Routes by page
 
@@ -23,3 +23,7 @@ Based off when2meet, but instead it`s a shareable wishlist where people can sign
 ### Wishlist page: see all items and contributors
 1. `wishlist/<wishlist_uuid>` (GET) = renders wishlist page
 2. `redirect_contributor_page/<wishlist_uuid>` (POST) = redirects to contributor signup page
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
