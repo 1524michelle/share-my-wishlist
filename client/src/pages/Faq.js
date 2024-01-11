@@ -5,7 +5,8 @@ const Faq = () => {
         <div>
         
             <h1>FAQ</h1>
-            <p>lorem ipsum...</p>
+            <p>Q: what is wishlistify?</p>
+            <p>A:wishlistify is a site inspired by when2meet, where friends can easily make wishlists and send them to each other during any gifting occasion.</p>
 
         </div>
     );
