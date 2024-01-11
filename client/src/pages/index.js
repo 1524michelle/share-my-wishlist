@@ -5,3 +5,4 @@ export { default as Create } from './Create';
 export { default as WishlistContributorsSignup } from './WishlistContributorsSignup'; 
 export { default as WishlistContributors } from './WishlistContributors'; 
 export { default as Wishlist } from './Wishlist'; 
+export { default as NotFound } from './NotFound'; 

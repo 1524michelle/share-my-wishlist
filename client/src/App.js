@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from  'react-router-dom';
 
 import { NavBar } from './components';
-import { Home, About, Faq, Create, WishlistContributorsSignup, WishlistContributors, Wishlist } from './pages';
+import { Home, About, Faq, Create, WishlistContributorsSignup, WishlistContributors, Wishlist, NotFound } from './pages';
 
 const App = () => {
   return (
@@ -18,6 +18,7 @@ const App = () => {
             <Route path="wishlist/contributor/signup/:wishlistUuid" element={<WishlistContributorsSignup />} />
             <Route path="wishlist/contributor/:wishlistUuid" element={<WishlistContributors />} />
             <Route path="wishlist/:wishlistUuid" element={<Wishlist />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
 
