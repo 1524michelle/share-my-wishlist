@@ -1,11 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from  'react-router-dom';
 
-function App() {
+import { NavBar } from './components';
+import { Home, About, Faq, Create, WishlistContributorsSignup, WishlistContributors, Wishlist } from './pages';
+
+const App = () => {
   return (
-    <div>
-      <h1>Hello, React!</h1>
-    </div>
+    <BrowserRouter>
+      <div>
+
+        <Routes>
+          <Route path="/" element={<NavBar />}>
+            <Route index element={<Home />} />
+            <Route path="about" element={<About />} />
+            <Route path="faq" element={<Faq />} />
+            <Route path="create" element={<Create />} />
+            <Route path="wishlist/contributor/signup/:wishlistUuid" element={<WishlistContributorsSignup />} />
+            <Route path="wishlist/contributor/:wishlistUuid" element={<WishlistContributors />} />
+            <Route path="wishlist/:wishlistUuid" element={<Wishlist />} />
+          </Route>
+        </Routes>
+
+      </div>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
