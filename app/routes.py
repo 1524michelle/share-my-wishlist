@@ -23,13 +23,16 @@ def submit_owner_name():
         response = app.make_default_options_response()
         return response
     else:
-        owner_name = request.form.get('owner_name')
-
+        owner_name = request.json.get('name')
+        print("owner_name=", owner_name)
         if owner_name:
+            print("name found, redirecting to create_list")
             session['owner_name'] = owner_name
+            print("session=", session)
             return redirect(url_for('create_list'))
         else:
             # no name -> refresh
+            print("no name, refreshing")
             return redirect(url_for('home'))
 
 # ADD TO (CREATE) LIST PAGE
@@ -105,7 +108,7 @@ def submit_contributor_name(wishlist_uuid):
         response = app.make_default_options_response()
         return response
     else:
-        contributor_name = request.form.get('contributor_name')
+        contributor_name = request.form.get('name')
 
         if contributor_name:
             session['contributor_name'] = contributor_name

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Button from './Button.js';
 
-const OwnerNameForm = () => {
+const NameForm = ({type, wishlistUuid}) => {
   const [formData, setFormData] = useState({name: ''});
 
   // Handler for form input changes
@@ -21,11 +21,22 @@ const OwnerNameForm = () => {
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
       // POST to my backend
-      const res = await axios.post(`${backendUrl}/submit_owner_name`, {
-          owner_name: formData.name,
+      if (type === 'owner') {
+        const res = await axios.post(`${backendUrl}/submit_owner_name`, {
+        name: formData.name,
       });
       console.log('Form submitted:', formData);
-      console.log('Backend response:', res.data);
+
+      } else if (type === 'contributor') {
+        const res = await axios.post(`${backendUrl}/submit_contributor_name/${wishlistUuid}`, {
+          name: formData.name,
+        });
+        console.log('Form submitted:', formData);
+
+      } else {
+        console.error('Unsupported form type');
+        return;
+      }
     } catch (err) {
       console.log('Error submitting form:', err);
     }
@@ -40,6 +51,12 @@ const OwnerNameForm = () => {
     margin: '10px',
   }
 
+  // set button text
+  let buttonText = "start your list >";
+  if (type === 'contributor') {
+    buttonText = "let's go! >"
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       <input
@@ -52,10 +69,9 @@ const OwnerNameForm = () => {
         style={inputStyle}
         required
       />
-
-      <Button type="submit" buttonText="start your list >" />
+      <Button type="submit" buttonText={buttonText} />
     </form>
   );
 };
 
-export default OwnerNameForm;
+export default NameForm;

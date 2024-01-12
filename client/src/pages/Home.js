@@ -1,13 +1,13 @@
 import React from 'react';
-import { OwnerNameForm } from '../components';
+import { NameForm } from '../components';
 
 const Home = () => {
     return (
         <div>
         
-            <h1>share my wishlist!</h1>
-            <p>enter your name to begin making your very own wishlist to share with your friends!</p>
-            <OwnerNameForm />
+            <h1>never double-gift again.</h1>
+            <p>Create a personalized wishlist, share it with friends, and let them choose the perfect gifts for you!</p>
+            <NameForm type="owner" wishlistUuid="" />
 
         </div>
     );
