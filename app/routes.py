@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, redirect, render_template, request, session, url_for
+from flask_cors import CORS
 from .models import insert_wishlist, get_wishlist_by_uuid, update_wishlist_items
 import uuid
 
 app = Flask(__name__, static_folder="../client/build")
+CORS(app)
 app.secret_key = 'my_secret_key'  # secret key for session mgmt
 
 # LANDING PAGE
@@ -14,17 +16,21 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/submit_owner_name', methods=['POST'])
+@app.route('/submit_owner_name', methods=['POST', 'OPTIONS'])
 def submit_owner_name():
     print("submit_owner_name")
-    owner_name = request.form.get('owner_name')
-
-    if owner_name:
-        session['owner_name'] = owner_name
-        return redirect(url_for('create_list'))
+    if request.method == 'OPTIONS':  # preflight request handling
+        response = app.make_default_options_response()
+        return response
     else:
-        # no name -> refresh
-        return redirect(url_for('/'))
+        owner_name = request.form.get('owner_name')
+
+        if owner_name:
+            session['owner_name'] = owner_name
+            return redirect(url_for('create_list'))
+        else:
+            # no name -> refresh
+            return redirect(url_for('home'))
 
 # ADD TO (CREATE) LIST PAGE
 
@@ -37,22 +43,26 @@ def create_list():
     return render_template('create_list.html', wishlist_items=wishlist_items, owner_name=owner_name)
 
 
-@app.route('/add_item', methods=['POST'])
+@app.route('/add_item', methods=['POST', 'OPTIONS'])
 def add_item():
     print("add_item")
-    title = request.form.get('title')
-    link = request.form.get('link')
-    contributor_name = None
+    if request.method == 'OPTIONS':  # preflight request handling
+        response = app.make_default_options_response()
+        return response
+    else:
+        title = request.form.get('title')
+        link = request.form.get('link')
+        contributor_name = None
 
-    if title:
-        item = {'title': title, 'link': link, 'contributor_name': None}
+        if title:
+            item = {'title': title, 'link': link, 'contributor_name': None}
 
-        # update the list stored in current session
-        wishlist_items = session.get('wishlist_items', [])
-        wishlist_items.append(item)
-        session['wishlist_items'] = wishlist_items
+            # update the list stored in current session
+            wishlist_items = session.get('wishlist_items', [])
+            wishlist_items.append(item)
+            session['wishlist_items'] = wishlist_items
 
-    return redirect(url_for('create_list'))
+        return redirect(url_for('create_list'))
 
 
 @app.route("/submit_wishlist")
@@ -88,17 +98,21 @@ def wishlist_contributors_signup(wishlist_uuid):
     return render_template('wishlist_contributors_signup.html', owner_name=owner_name, wishlist_uuid=wishlist_uuid)
 
 
-@app.route('/submit_contributor_name/<wishlist_uuid>', methods=['POST'])
+@app.route('/submit_contributor_name/<wishlist_uuid>', methods=['POST', 'OPTIONS'])
 def submit_contributor_name(wishlist_uuid):
     print("submit_contributor_name")
-    contributor_name = request.form.get('contributor_name')
-
-    if contributor_name:
-        session['contributor_name'] = contributor_name
-        return redirect(url_for('wishlist_contributors', wishlist_uuid=wishlist_uuid))
+    if request.method == 'OPTIONS':  # preflight request handling
+        response = app.make_default_options_response()
+        return response
     else:
-        # no contributor name -> refresh page
-        return redirect(url_for('wishlist_contributors_signup', wishlist_uuid=wishlist_uuid))
+        contributor_name = request.form.get('contributor_name')
+
+        if contributor_name:
+            session['contributor_name'] = contributor_name
+            return redirect(url_for('wishlist_contributors', wishlist_uuid=wishlist_uuid))
+        else:
+            # no contributor name -> refresh page
+            return redirect(url_for('wishlist_contributors_signup', wishlist_uuid=wishlist_uuid))
 
 # WISHLIST CONTRIBUTORS PAGE
 
@@ -119,7 +133,7 @@ def wishlist_contributors(wishlist_uuid):
     return render_template('wishlist_contributors.html', owner_name=owner_name, contributor_name=contributor_name, wishlist_uuid=wishlist_uuid, wishlist_items=wishlist_items)
 
 
-@app.route("/submit_wishlist_contributors/<wishlist_uuid>", methods=['POST'])
+@app.route("/submit_wishlist_contributors/<wishlist_uuid>", methods=['POST', 'OPTIONS'])
 def submit_wishlist_contributors(wishlist_uuid):
     print("submit_wishlist_contributors")
     # check if there's a contributor in session, refresh if not
@@ -164,10 +178,14 @@ def wishlist(wishlist_uuid):
     return render_template('wishlist.html', owner_name=owner_name, wishlist_uuid=wishlist_uuid, wishlist_items=wishlist_items)
 
 
-@app.route("/redirect_contributor_page/<wishlist_uuid>", methods=['POST'])
+@app.route("/redirect_contributor_page/<wishlist_uuid>", methods=['POST', 'OPTIONS'])
 def redirect_contributor_page(wishlist_uuid):
     print(redirect_contributor_page)
-    return redirect(url_for('wishlist_contributors_signup', wishlist_uuid=wishlist_uuid))
+    if request.method == 'OPTIONS':  # preflight request handling
+        response = app.make_default_options_response()
+        return response
+    else:
+        return redirect(url_for('wishlist_contributors_signup', wishlist_uuid=wishlist_uuid))
 
 # TEST
 
@@ -176,3 +194,7 @@ def redirect_contributor_page(wishlist_uuid):
 @app.route("/hello/<name>")  # hello_world gets name param from url
 def hello_world(name=None):
     return render_template('hello.html', name=name)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

@@ -5,6 +5,7 @@ const NavBar = () => {
     return (
         <>
           <nav>
+            <h1>wishlistify</h1>
             <ul>
               <li>
                 <Link to="/">Home</Link>
