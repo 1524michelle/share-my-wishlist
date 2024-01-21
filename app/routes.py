@@ -4,8 +4,9 @@ from .models import insert_wishlist, get_wishlist_by_uuid, update_wishlist_items
 import uuid
 
 app = Flask(__name__, static_folder="../client/build")
-CORS(app)
+CORS(app, supports_credentials=True)
 app.secret_key = 'my_secret_key'  # secret key for session mgmt
+app.config['SECRET_KEY'] = 'your_secret_key'
 
 # LANDING PAGE
 
@@ -23,12 +24,13 @@ def submit_owner_name():
         response = app.make_default_options_response()
         return response
     else:
-        owner_name = request.json.get('name')
+        owner_name = request.form.get('name')
         print("owner_name=", owner_name)
         if owner_name:
             print("name found, redirecting to create_list")
             session['owner_name'] = owner_name
             print("session=", session)
+            # extra args to make session persist with CORS
             return redirect(url_for('create_list'))
         else:
             # no name -> refresh
@@ -41,8 +43,9 @@ def submit_owner_name():
 @ app.route("/create_list")
 def create_list():
     print("create_list")
+    print("session=", session)
     wishlist_items = session.get('wishlist_items', [])
-    owner_name = session['owner_name']
+    owner_name = session.get('owner_name', 'default_value')
     return render_template('create_list.html', wishlist_items=wishlist_items, owner_name=owner_name)
 
 
@@ -91,7 +94,7 @@ def submit_wishlist():
 # WISHLIST CONTRIBUTORS SIGNUP PAGE
 
 
-@app.route("/wishlist_contributors_signup/<wishlist_uuid>")
+@app.route("/wishlist/contributor/signup/<wishlist_uuid>")
 def wishlist_contributors_signup(wishlist_uuid):
     print("wishlist_contributors_signup")
     # get wishlist data from db
@@ -120,7 +123,7 @@ def submit_contributor_name(wishlist_uuid):
 # WISHLIST CONTRIBUTORS PAGE
 
 
-@app.route("/wishlist_contributors/<wishlist_uuid>")
+@app.route("/wishlist/contributor/<wishlist_uuid>")
 def wishlist_contributors(wishlist_uuid):
     print("wishlist_contributors")
 

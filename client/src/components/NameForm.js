@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Button from './Button.js';
 
-const NameForm = ({type, wishlistUuid}) => {
-  const [formData, setFormData] = useState({name: ''});
+const NameForm = ({ type, wishlistUuid }) => {
+  const [formData, setFormData] = useState({ name: '' });
 
   // Handler for form input changes
   const handleInputChange = (e) => {
@@ -20,19 +20,23 @@ const NameForm = ({type, wishlistUuid}) => {
 
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      const config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      };
+
+      // Convert form data to URLSearchParams for x-www-form-urlencoded encoding
+      const formDataToSend = new URLSearchParams();
+      formDataToSend.append('name', formData.name);
+
       // POST to my backend
       if (type === 'owner') {
-        const res = await axios.post(`${backendUrl}/submit_owner_name`, {
-        name: formData.name,
-      });
-      console.log('Form submitted:', formData);
-
-      } else if (type === 'contributor') {
-        const res = await axios.post(`${backendUrl}/submit_contributor_name/${wishlistUuid}`, {
-          name: formData.name,
-        });
+        const res = await axios.post(`${backendUrl}/submit_owner_name`, formDataToSend, config);
         console.log('Form submitted:', formData);
-
+      } else if (type === 'contributor') {
+        const res = await axios.post(`${backendUrl}/submit_contributor_name/${wishlistUuid}`, formDataToSend, config);
+        console.log('Form submitted:', formData);
       } else {
         console.error('Unsupported form type');
         return;
@@ -49,12 +53,12 @@ const NameForm = ({type, wishlistUuid}) => {
     borderRadius: '50px',
     border: '1px solid #ccc',
     margin: '10px',
-  }
+  };
 
   // set button text
   let buttonText = "start your list >";
   if (type === 'contributor') {
-    buttonText = "let's go! >"
+    buttonText = "let's go! >";
   }
 
   return (
