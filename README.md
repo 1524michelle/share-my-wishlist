@@ -5,7 +5,7 @@ Based off when2meet, but instead it`s a shareable wishlist where people can sign
 
 ### Landing page: owner signs up
 1. `/` (GET) = renders form where owner starts a wishlist by submitting their name
-2. `submit_owner_name` (POST) = processes owner name from the form and stores it in the current session, redirects to create list page
+2. `submit_event_title` (POST) = processes event title from the form and stores it in the current session, redirects to create list page
 
 ### Create list page: owner creates their list
 1. `create` (GET) = renders form where owner can add items to their wishlist

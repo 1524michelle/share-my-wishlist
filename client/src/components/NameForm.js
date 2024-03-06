@@ -32,7 +32,7 @@ const NameForm = ({ type, wishlistUuid }) => {
 
       // POST to my backend
       if (type === 'owner') {
-        const res = await axios.post(`${backendUrl}/submit_owner_name`, formDataToSend, config);
+        const res = await axios.post(`${backendUrl}/submit_event_title`, formDataToSend, config);
         console.log('Form submitted:', formData);
       } else if (type === 'contributor') {
         const res = await axios.post(`${backendUrl}/submit_contributor_name/${wishlistUuid}`, formDataToSend, config);

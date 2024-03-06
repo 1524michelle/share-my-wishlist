@@ -9,7 +9,7 @@ const Create = () => {
     useEffect(() => {
         const fetchOwnerName = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/owner_name`);
+                const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/event_title`);
                 setOwnerName(response.data.ownerName);
             } catch (error) {
                 console.error('Error fetching owner name:', error);

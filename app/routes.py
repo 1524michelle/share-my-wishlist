@@ -16,15 +16,15 @@ def home():
     return render_template('home.html')
 
 
-@app.route('/submit_owner_name', methods=['POST', 'OPTIONS'])
-def submit_owner_name():
+@app.route('/submit_event_title', methods=['POST', 'OPTIONS'])
+def submit_event_title():
     if request.method == 'OPTIONS':  # preflight request handling
         response = app.make_default_options_response()
         return response
     else:
-        owner_name = request.form.get('owner_name')
-        if owner_name:
-            session['owner_name'] = owner_name
+        event_title = request.form.get('event_title')
+        if event_title:
+            session['event_title'] = event_title
             return redirect(url_for('create_list'))
         else:
             return redirect(url_for('home'))
@@ -35,8 +35,8 @@ def submit_owner_name():
 @app.route("/create_list")
 def create_list():
     wishlist_items = session.get('wishlist_items', [])
-    owner_name = session.get('owner_name', 'default_value')
-    return render_template('create_list.html', wishlist_items=wishlist_items, owner_name=owner_name)
+    event_title = session.get('event_title', 'default_value')
+    return render_template('create_list.html', wishlist_items=wishlist_items, event_title=event_title)
 
 
 @app.route('/add_item', methods=['POST', 'OPTIONS'])
@@ -58,13 +58,13 @@ def add_item():
 @app.route("/submit_wishlist")
 def submit_wishlist():
     wishlist_uuid = str(uuid.uuid4())
-    owner_name = session.get('owner_name', "mimi")
+    event_title = session.get('event_title', "mimi")
     wishlist_items = session.get('wishlist_items', [])
-    wishlist_data = {'owner_name': owner_name, 'wishlist_uuid': wishlist_uuid,
+    wishlist_data = {'event_title': event_title, 'wishlist_uuid': wishlist_uuid,
                      'items': wishlist_items, 'contributor_name': None}
     insert_wishlist(wishlist_data)
     session.pop('wishlist_items', None)
-    session.pop('owner_name', None)
+    session.pop('event_title', None)
     return redirect(url_for('wishlist', wishlist_uuid=wishlist_uuid))
 
 # WISHLIST CONTRIBUTORS SIGNUP PAGE
@@ -73,8 +73,8 @@ def submit_wishlist():
 @app.route("/wishlist/contributor/signup/<wishlist_uuid>")
 def wishlist_contributors_signup(wishlist_uuid):
     wishlist_data = get_wishlist_by_uuid(wishlist_uuid)
-    owner_name = wishlist_data['owner_name']
-    return render_template('wishlist_contributors_signup.html', owner_name=owner_name, wishlist_uuid=wishlist_uuid)
+    event_title = wishlist_data['event_title']
+    return render_template('wishlist_contributors_signup.html', event_title=event_title, wishlist_uuid=wishlist_uuid)
 
 
 @app.route('/submit_contributor_name/<wishlist_uuid>', methods=['POST', 'OPTIONS'])
@@ -96,10 +96,10 @@ def submit_contributor_name(wishlist_uuid):
 @app.route("/wishlist/contributor/<wishlist_uuid>")
 def wishlist_contributors(wishlist_uuid):
     wishlist_data = get_wishlist_by_uuid(wishlist_uuid)
-    owner_name = wishlist_data['owner_name']
+    event_title = wishlist_data['event_title']
     wishlist_items = wishlist_data['items']
     contributor_name = session['contributor_name']
-    return render_template('wishlist_contributors.html', owner_name=owner_name, contributor_name=contributor_name, wishlist_uuid=wishlist_uuid, wishlist_items=wishlist_items)
+    return render_template('wishlist_contributors.html', event_title=event_title, contributor_name=contributor_name, wishlist_uuid=wishlist_uuid, wishlist_items=wishlist_items)
 
 
 @app.route("/submit_wishlist_contributors/<wishlist_uuid>", methods=['POST', 'OPTIONS'])
@@ -124,10 +124,10 @@ def submit_wishlist_contributors(wishlist_uuid):
 @app.route("/wishlist/<wishlist_uuid>")
 def wishlist(wishlist_uuid):
     wishlist_data = get_wishlist_by_uuid(wishlist_uuid)
-    owner_name = wishlist_data['owner_name']
+    event_title = wishlist_data['event_title']
     wishlist_items = wishlist_data['items']
 
-    return render_template('wishlist.html', owner_name=owner_name, wishlist_uuid=wishlist_uuid, wishlist_items=wishlist_items)
+    return render_template('wishlist.html', event_title=event_title, wishlist_uuid=wishlist_uuid, wishlist_items=wishlist_items)
 
 
 @app.route("/redirect_contributor_page/<wishlist_uuid>", methods=['POST', 'OPTIONS'])

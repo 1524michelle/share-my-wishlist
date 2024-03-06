@@ -6,7 +6,7 @@
     <title>share my wishlist!</title>
 </head>
 <body>
-    <h1>{{ owner_name }}'s wishlist</h1>
+    <h1>{{ event_title }}</h1>
     <p>share this wishlist with your friends!</p>
 
     <form action="{{ url_for('redirect_contributor_page', wishlist_uuid=wishlist_uuid) }}" method="post">
