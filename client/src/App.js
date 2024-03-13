@@ -15,7 +15,7 @@ const App = () => {
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
             <Route path="faq" element={<Faq />} />
-            <Route path="create" element={<Create />} />
+            <Route path="create" element={<Create event_title="${event_title}"/>} />
             <Route path="wishlist/contributor/signup/:wishlistUuid" element={<WishlistContributorsSignup event_title="${event_title}"/>} />
             <Route path="wishlist/contributor/:wishlistUuid" element={<WishlistContributors />} />
             <Route path="wishlist/:wishlistUuid" element={<Wishlist />} />
